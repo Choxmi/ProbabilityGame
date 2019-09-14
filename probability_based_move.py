@@ -45,38 +45,29 @@ from tkinter import messagebox
 # to calculate the required conditional probabilities.
 #
 def PitWumpus_probability_distribution(self, width, height): 
-    # Create a list of variable names to represent the rooms. 
-    # A string '(i,j)' is used as a variable name to represent a room at (i, j)
     self.PW_variables = [] 
-    for column in range(1, width + 1):
-        for row in range(1, height + 1):
-            self.PW_variables  = self.PW_variables  + ['(%d,%d)'%(column,row)]
-    print("-----------------------------------------")
+    for col in range(1, width + 1):
+        for rw in range(1, height + 1):
+            self.PW_variables  = self.PW_variables  + ['(%d,%d)'%(col,rw)]
     print(self.PW_variables)
-    fringe = []
-    fringe = list(self.available_rooms)
-    known_BS = self.observation_breeze_stench(self.visited_rooms)
-    known_PW = self.observation_pits(self.visited_rooms)
+    rooms_aval = []
+    rooms_aval = list(self.available_rooms)
+    bs = self.observation_breeze_stench(self.visited_rooms)
+    pw = self.observation_pits(self.visited_rooms)
 
-    P = JointProbDist(fringe, { each:[T, F] for each in fringe })
+    out = JointProbDist(rooms_aval, { each:[T, F] for each in rooms_aval })
 
-    events = all_events_jpd(fringe, P, known_PW)
-    for each in events:
-        prob = 1
-        for (var, val) in each.items():
+    events = all_events_jpd(rooms_aval, out, pw)
+    for event in events:
+        prob__ = 1
+        for (var, val) in event.items():
             if val:
-                prob *= .2
+                prob__ *= .2
             else:
-                prob *= .8
-        P[each] = self.consistent(known_BS, each) * prob
+                prob__ *= .8
+        out[each] = self.consistent(bs, event) * prob__
 
-    print("Returning..............")
-    print(P)
-
-    return P
-    #--------- Add your code here -------------------------------------------------------------------
-
-    
+    return out
         
 #---------------------------------------------------------------------------------------------------
 #   Function 2. next_room_prob(self, x, y)
