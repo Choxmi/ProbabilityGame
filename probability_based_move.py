@@ -97,27 +97,22 @@ def PitWumpus_probability_distribution(self, width, height):
 #       threshold, return (0,0).
 #
 def next_room_prob(self, x, y):
-    new_room = (0, 0)
-    fringe = []
-    lowest_prob = 1
-    fringe = list(self.available_rooms)
-    known_BS = self.observation_breeze_stench(self.visited_rooms)
-    known_PW = self.observation_pits(self.visited_rooms)
-    for each_room in fringe:
-        if self.check_safety(each_room[0], each_room[1]) == True:
-            new_room = each_room
+    room_ = (0, 0)
+    rooms_aval = list(self.available_rooms)
+    bs = self.observation_breeze_stench(self.visited_rooms)
+    pw = self.observation_pits(self.visited_rooms)
+    for room in rooms_aval:
+        if self.check_safety(room[0], room[1]) == True:
+            room_ = room
             break
         else:
-            prob_each_room = enumerate_joint_ask(each_room, {}, self.PitWumpus_probability_distribution(self.cave.WIDTH,
+            prob = enumerate_joint_ask(room, {}, self.PitWumpus_probability_distribution(self.cave.WIDTH,
                                                                                                         self.cave.HEIGHT))
-            if prob_each_room.prob[True] < lowest_prob:
-                lowest_prob = prob_each_room.prob[True]
-                if lowest_prob <= self.max_pit_probability:
-                    new_room = each_room
-    return new_room
-    #--------- Add your code here -------------------------------------------------------------------
-
-
+            if prob.prob[True] < 1:
+                prob_ = prob.prob[True]
+                if prob_ <= self.max_pit_probability:
+                    room_ = room
+    return room_
 
 
 
